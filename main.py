@@ -1,14 +1,14 @@
 import tkinter as tk
-from tkinter import TOP, BOTTOM, CENTER, SE
+from tkinter import TOP, BOTTOM, CENTER, SE, Y
 window = tk.Tk()
 window.geometry("800x600")
 window.title('Крестики-Нолики')
 
-title = tk.Label(window, text = "GUI-Tic-Tac-Toe",
+title = tk.Label(main, text = "GUI-Tic-Tac-Toe",
     font = ("InterFace XBold", 30)
 )
 button = tk.Button(
-    window,
+    main,
     text = 'Начать игру',
     width = 15,
     height = 2,
@@ -26,4 +26,5 @@ button = tk.Button(
 
 title.pack(side=TOP)
 button.pack(side=TOP, expand=True)
+main.pack(expand=True, fill=Y)
 window.mainloop()
