@@ -1,30 +1,16 @@
 import tkinter as tk
-from tkinter import TOP, BOTTOM, CENTER, SE, Y
+from tkinter import TOP, BOTTOM, CENTER, SE, Y, BOTH
+
+from main_menu_frame import MainMenuFrame
 window = tk.Tk()
+
 window.geometry("800x600")
 window.title('Крестики-Нолики')
+game = tk.Frame(window, bg="red")
 
-title = tk.Label(main, text = "GUI-Tic-Tac-Toe",
-    font = ("InterFace XBold", 30)
-)
-button = tk.Button(
-    main,
-    text = 'Начать игру',
-    width = 15,
-    height = 2,
-    font = "Arial 20 bold",
-    fg = '#000000',
-    bg = '#32CD32',
-    bd =  10,
-    highlightthickness=4, 
-    highlightcolor="#32CD32", 
-    highlightbackground="#32CD32", 
-    borderwidth=4
-    # borderwidth = '2',
-    # highlightcolor = 'black'
-)
+def start_game():
+    main_menu_frame.destroy()
+    game.pack(fill=BOTH, expand=True)
 
-title.pack(side=TOP)
-button.pack(side=TOP, expand=True)
-main.pack(expand=True, fill=Y)
+main_menu_frame = MainMenuFrame(window, start_game)
 window.mainloop()
