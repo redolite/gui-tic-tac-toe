@@ -10,6 +10,14 @@ class GameFrame(Frame):
         master.columnconfigure(0, weight=1)
         top_bar = Frame(self, bg='green', height=50, width=100)
         board = Frame(self, bg='yellow')
+        board.rowconfigure(0, weight=1)
+        board.rowconfigure(1, weight=1)
+        board.rowconfigure(2, weight=1)
+        board.columnconfigure(0, weight=1)
+        board.columnconfigure(1, weight=2)
+        board.columnconfigure(2, weight=2)
+        board.columnconfigure(3, weight=2)
+        board.columnconfigure(4, weight=1)
         # Параметр sticky дает возможность виджету занимать доступное место в
         # ячейке, расщиряясь за свои границы
         top_bar.grid(row=0, column=0, columnspan=5, sticky="nsew")
