@@ -1,15 +1,18 @@
-from tkinter import Frame, Label
+from tkinter import Frame, Label, Button
 
 
 class GameFrame(Frame):
     def __init__(self, master):
-        super().__init__(master, bg="blue")
+        super().__init__(master)
         # Чтобы фрейм мог расширяться, необходимо настроить сетку на его
         # контейнере
         master.rowconfigure(0, weight=1)
         master.columnconfigure(0, weight=1)
-        top_bar = Frame(self, bg='green', height=50, width=100)
-        board = Frame(self, bg='yellow')
+        top_bar = Frame(self, height=50, width=100)
+        top_bar.columnconfigure(0, weight=1)
+        top_bar.columnconfigure(1, weight=1)
+        top_bar.columnconfigure(2, weight=1)
+        board = Frame(self)
         board.rowconfigure(0, weight=1)
         board.rowconfigure(1, weight=1)
         board.rowconfigure(2, weight=1)
@@ -18,10 +21,33 @@ class GameFrame(Frame):
         board.columnconfigure(2, weight=2)
         board.columnconfigure(3, weight=2)
         board.columnconfigure(4, weight=1)
+        button00 = Button(board, text="T")
+        button01 = Button(board, text="B")
+        button02 = Button(board, text="X")
+        button03 = Button(board, text="L")
+        button04 = Button(board, text="P")
+        button05 = Button(board, text="G")
+        button06 = Button(board, text="V")
+        button07 = Button(board, text="A")
+        button08 = Button(board, text="Q")
+        turn_counter = Label(top_bar, text='1 Ход')
+        timer = Label(top_bar, text='0:00')
+
         # Параметр sticky дает возможность виджету занимать доступное место в
         # ячейке, расщиряясь за свои границы
         top_bar.grid(row=0, column=0, columnspan=5, sticky="nsew")
         board.grid(row=1, column=0, columnspan=5, rowspan=3, sticky="nsew")
+        button00.grid(row=0, column=1, sticky="nsew")
+        button01.grid(row=1, column=3, sticky="nsew")
+        button02.grid(row=1, column=2, sticky="nsew")
+        button03.grid(row=1, column=1, sticky="nsew")
+        button04.grid(row=0, column=2, sticky="nsew")
+        button05.grid(row=0, column=3, sticky="nsew")
+        button06.grid(row=2, column=3, sticky="nsew")
+        button07.grid(row=2, column=1, sticky="nsew")
+        button08.grid(row=2, column=2, sticky="nsew")
+        turn_counter.grid(row=0, column=2, sticky="we")
+        timer.grid(row=0, column=1, sticky='we')
 
     def show(self):
         # Каждой колонке внутри сетки необходимо выдать weight
