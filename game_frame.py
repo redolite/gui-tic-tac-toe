@@ -31,7 +31,7 @@ class GameFrame(Frame):
         button07 = Button(board, text="A")
         button08 = Button(board, text="Q")
         turn_counter = Label(top_bar, text='1 Ход')
-        timer = Label(top_bar, text='0:00')
+        timer = Timer(top_bar)
 
         # Параметр sticky дает возможность виджету занимать доступное место в
         # ячейке, расщиряясь за свои границы
@@ -59,3 +59,19 @@ class GameFrame(Frame):
         self.columnconfigure(0, weight=1)
 
         self.grid(sticky="nsew")
+
+class Timer(Label):
+    seconds = 0
+    minutes = 0
+    def __init__(self, master):
+        super().__init__(master)
+        self.count()
+
+    def count(self):
+        text = f'{self.minutes}:{self.seconds}'
+        self.configure(text=text)
+        self.seconds = self.seconds + 1
+        if self.seconds >= 60:
+            self.minutes = self.minutes + 1 
+            self.seconds = 0
+        self.after(1000, self.count)
