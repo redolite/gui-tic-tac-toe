@@ -9,27 +9,24 @@ class GameFrame(Frame):
         master.rowconfigure(0, weight=1)
         master.columnconfigure(0, weight=1)
         top_bar = Frame(self, height=50, width=100)
-        top_bar.columnconfigure(0, weight=1)
-        top_bar.columnconfigure(1, weight=1)
-        top_bar.columnconfigure(2, weight=1)
+        for i in range(3):
+            top_bar.columnconfigure(i, weight=1)
         board = Frame(self)
-        board.rowconfigure(0, weight=1)
-        board.rowconfigure(1, weight=1)
-        board.rowconfigure(2, weight=1)
+        for i in range(3):
+            board.rowconfigure(i, weight=1)
         board.columnconfigure(0, weight=1)
         board.columnconfigure(1, weight=2)
         board.columnconfigure(2, weight=2)
         board.columnconfigure(3, weight=2)
         board.columnconfigure(4, weight=1)
-        button00 = Button(board, text="T")
-        button01 = Button(board, text="B")
-        button02 = Button(board, text="X")
-        button03 = Button(board, text="L")
-        button04 = Button(board, text="P")
-        button05 = Button(board, text="G")
-        button06 = Button(board, text="V")
-        button07 = Button(board, text="A")
-        button08 = Button(board, text="Q")
+        buttons = []
+        for i in range(3):
+            buttons_list = []
+            for j in range(3):
+                button = Button(board, text=i)
+                buttons_list.append(button)
+            buttons.append(buttons_list)
+
         turn_counter = Label(top_bar, text='1 Ход')
         timer = Timer(top_bar)
 
@@ -37,15 +34,9 @@ class GameFrame(Frame):
         # ячейке, расщиряясь за свои границы
         top_bar.grid(row=0, column=0, columnspan=5, sticky="nsew")
         board.grid(row=1, column=0, columnspan=5, rowspan=3, sticky="nsew")
-        button00.grid(row=0, column=1, sticky="nsew")
-        button01.grid(row=1, column=3, sticky="nsew")
-        button02.grid(row=1, column=2, sticky="nsew")
-        button03.grid(row=1, column=1, sticky="nsew")
-        button04.grid(row=0, column=2, sticky="nsew")
-        button05.grid(row=0, column=3, sticky="nsew")
-        button06.grid(row=2, column=3, sticky="nsew")
-        button07.grid(row=2, column=1, sticky="nsew")
-        button08.grid(row=2, column=2, sticky="nsew")
+        for i in range(3):
+            for j in range(3):
+                buttons[i][j].grid(row=i, column=j+1, sticky='nsew')
         turn_counter.grid(row=0, column=2, sticky="we")
         timer.grid(row=0, column=1, sticky='we')
 
