@@ -8,9 +8,11 @@ class GameFrame(Frame):
         # контейнере
         master.rowconfigure(0, weight=1)
         master.columnconfigure(0, weight=1)
+
         top_bar = Frame(self, height=50, width=100)
         for i in range(3):
             top_bar.columnconfigure(i, weight=1)
+
         board = Frame(self)
         for i in range(3):
             board.rowconfigure(i, weight=1)
@@ -19,6 +21,7 @@ class GameFrame(Frame):
         board.columnconfigure(2, weight=2)
         board.columnconfigure(3, weight=2)
         board.columnconfigure(4, weight=1)
+        
         buttons = []
         for i in range(3):
             buttons_list = []
@@ -59,7 +62,7 @@ class Timer(Label):
         self.count()
 
     def count(self):
-        text = f'{self.minutes}:{self.seconds}'
+        text = f'{self.minutes}:{self.seconds:02d}'
         self.configure(text=text)
         self.seconds = self.seconds + 1
         if self.seconds >= 60:
