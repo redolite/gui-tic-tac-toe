@@ -2,6 +2,8 @@ from tkinter import Frame, Label, Button
 
 
 class GameFrame(Frame):
+    table = {}
+    active_player = 'X'
     def __init__(self, master):
         super().__init__(master)
         # Чтобы фрейм мог расширяться, необходимо настроить сетку на его
@@ -21,16 +23,16 @@ class GameFrame(Frame):
         board.columnconfigure(2, weight=2)
         board.columnconfigure(3, weight=2)
         board.columnconfigure(4, weight=1)
-        
+
         buttons = []
         for i in range(3):
             buttons_list = []
             for j in range(3):
-                button = Button(board, text=i)
+                button = Button(board, text=i, command=lambda arg1=i, arg2=j: self.handle_turn(arg1, arg2))
+                self.table[f'cell{i}-{j}'] = ''
                 buttons_list.append(button)
             buttons.append(buttons_list)
-
-        turn_counter = Label(top_bar, text='1 Ход')
+        turn_counter = Label(top_bar, text='1 Ход') # текст в лейбле можно соеденить со значением переменной(прочитать)
         timer = Timer(top_bar)
 
         # Параметр sticky дает возможность виджету занимать доступное место в
@@ -53,6 +55,19 @@ class GameFrame(Frame):
         self.columnconfigure(0, weight=1)
 
         self.grid(sticky="nsew")
+
+    def handle_turn(self, cell_row, cell_column):
+        print('Active Player:', self.active_player)
+        self.table[f'cell{cell_row}-{cell_column}'] = 'pressed'
+        print(self.table)
+        self.switch_active_player()
+
+    def switch_active_player(self):
+        if self.active_player == 'X':
+            self.active_player = 'O'
+        elif self.active_player == 'O':
+            self.active_player = 'X'
+
 
 class Timer(Label):
     seconds = 0
