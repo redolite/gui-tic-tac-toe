@@ -2,9 +2,9 @@ from tkinter import Frame, Label, Button
 
 
 class GameFrame(Frame):
-    table = {}
-    active_player = 'X'
     def __init__(self, master):
+        self.table = {}
+        self.active_player = 'X'
         super().__init__(master)
         # Чтобы фрейм мог расширяться, необходимо настроить сетку на его
         # контейнере
