@@ -1,10 +1,12 @@
-from tkinter import Frame, Label, Button
+from tkinter import Frame, Label, Button, StringVar
 
 
 class GameFrame(Frame):
     def __init__(self, master):
         self.table = {}
         self.active_player = 'X'
+        self.current_turn = 1
+        self.turn_string = StringVar(value=f'Ход {self.current_turn}')
         super().__init__(master)
         # Чтобы фрейм мог расширяться, необходимо настроить сетку на его
         # контейнере
@@ -32,7 +34,7 @@ class GameFrame(Frame):
                 self.table[f'cell{i}-{j}'] = ''
                 buttons_list.append(button)
             buttons.append(buttons_list)
-        turn_counter = Label(top_bar, text='1 Ход') # текст в лейбле можно соеденить со значением переменной(прочитать)
+        turn_counter = Label(top_bar, textvariable=self.turn_string) # текст в лейбле можно соеденить со значением переменной(прочитать)
         timer = Timer(top_bar)
 
         # Параметр sticky дает возможность виджету занимать доступное место в
@@ -58,15 +60,23 @@ class GameFrame(Frame):
 
     def handle_turn(self, cell_row, cell_column):
         print('Active Player:', self.active_player)
-        self.table[f'cell{cell_row}-{cell_column}'] = 'pressed'
+        self.table[f'cell{cell_row}-{cell_column}'] = self.active_player
         print(self.table)
         self.switch_active_player()
+        self.update_turn_count()
 
     def switch_active_player(self):
         if self.active_player == 'X':
             self.active_player = 'O'
         elif self.active_player == 'O':
             self.active_player = 'X'
+
+    def update_turn_count(self):
+        self.current_turn = self.current_turn + 1
+        self.turn_string.set(f'Ход {self.current_turn}')
+        print("current_turn:", self.current_turn)
+        print("turn_string:", self.turn_string.get())
+
 
 
 class Timer(Label):
