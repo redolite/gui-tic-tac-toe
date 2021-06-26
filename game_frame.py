@@ -30,8 +30,8 @@ class GameFrame(Frame):
         for i in range(3):
             buttons_list = []
             for j in range(3):
-                button = Button(board, text=i, command=lambda arg1=i, arg2=j: self.handle_turn(arg1, arg2))
-                self.table[f'cell{i}-{j}'] = ''
+                self.table[f'cell{i}-{j}'] = StringVar(value='')
+                button = Button(board, textvariable = self.table[f'cell{i}-{j}'], command=lambda arg1=i, arg2=j: self.handle_turn(arg1, arg2))
                 buttons_list.append(button)
             buttons.append(buttons_list)
         turn_counter = Label(top_bar, textvariable=self.turn_string) # текст в лейбле можно соеденить со значением переменной(прочитать)
@@ -59,11 +59,12 @@ class GameFrame(Frame):
         self.grid(sticky="nsew")
 
     def handle_turn(self, cell_row, cell_column):
-        print('Active Player:', self.active_player)
-        self.table[f'cell{cell_row}-{cell_column}'] = self.active_player
-        print(self.table)
-        self.switch_active_player()
-        self.update_turn_count()
+        if self.table[f'cell{cell_row}-{cell_column}'].get() == '':
+            print('Active Player:', self.active_player)
+            self.table[f'cell{cell_row}-{cell_column}'].set(self.active_player)
+            print(self.table)
+            self.switch_active_player()
+            self.update_turn_count()
 
     def switch_active_player(self):
         if self.active_player == 'X':
