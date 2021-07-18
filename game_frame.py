@@ -63,6 +63,10 @@ class GameFrame(Frame):
             print('Active Player:', self.active_player)
             self.table[f'cell{cell_row}-{cell_column}'].set(self.active_player)
             print(self.table)
+            if self.current_turn >= 5:
+                self.check_for_victory(cell_row, cell_column)
+                if self.check_for_victory(cell_row, cell_column):
+                    print('Hi')
             self.switch_active_player()
             self.update_turn_count()
 
@@ -78,6 +82,28 @@ class GameFrame(Frame):
         print("current_turn:", self.current_turn)
         print("turn_string:", self.turn_string.get())
 
+    def check_for_victory(self, cell_row, cell_column):
+        results_in_row = [self.table[f'cell{cell_row}-{i}'].get() for i in range(3)]
+        results_in_column = [self.table[f'cell{i}-{cell_column}'].get() for i in range(3)]
+        if all(r == self.active_player for r in results_in_row):
+            return True
+        if all(r == self.active_player for r in results_in_column):
+            return True
+        should_check_main_diagonal = cell_row == cell_column
+        should_check_second_diagonal = (cell_row == 0 and cell_column == 2) or (cell_row == 1 and cell_column == 1) or (cell_row == 2 and cell_column == 0)
+        if should_check_main_diagonal:
+            results_in_main_diagonal = [self.table[f'cell{i}-{i}'].get() for i in range(3)]
+            if all(r == self.active_player for r in results_in_main_diagonal):
+                return True
+        if should_check_second_diagonal:
+            results_in_second_diagonal = [self.table[f'cell{i}-{2-i}'].get() for i in range(3)]
+            if all(r == self.active_player for r in results_in_second_diagonal):
+                return True
+        return False  
+                   
+                
+        # TODO: При положительном результате проверки - прекращать игру
+        
 
 
 class Timer(Label):
