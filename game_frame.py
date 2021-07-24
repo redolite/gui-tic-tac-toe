@@ -7,6 +7,7 @@ class GameFrame(Frame):
         self.active_player = 'X'
         self.current_turn = 1
         self.turn_string = StringVar(value=f'Ход {self.current_turn}')
+        self.is_game_finished = False
         super().__init__(master)
         # Чтобы фрейм мог расширяться, необходимо настроить сетку на его
         # контейнере
@@ -14,6 +15,7 @@ class GameFrame(Frame):
         master.columnconfigure(0, weight=1)
 
         top_bar = Frame(self, height=50, width=100)
+        self.timer = Timer(top_bar)
         for i in range(3):
             top_bar.columnconfigure(i, weight=1)
 
@@ -35,7 +37,6 @@ class GameFrame(Frame):
                 buttons_list.append(button)
             buttons.append(buttons_list)
         turn_counter = Label(top_bar, textvariable=self.turn_string) # текст в лейбле можно соеденить со значением переменной(прочитать)
-        timer = Timer(top_bar)
 
         # Параметр sticky дает возможность виджету занимать доступное место в
         # ячейке, расщиряясь за свои границы
@@ -45,7 +46,7 @@ class GameFrame(Frame):
             for j in range(3):
                 buttons[i][j].grid(row=i, column=j+1, sticky='nsew')
         turn_counter.grid(row=0, column=2, sticky="we")
-        timer.grid(row=0, column=1, sticky='we')
+        self.timer.grid(row=0, column=1, sticky='we')
 
     def show(self):
         # Каждой колонке внутри сетки необходимо выдать weight
@@ -59,16 +60,22 @@ class GameFrame(Frame):
         self.grid(sticky="nsew")
 
     def handle_turn(self, cell_row, cell_column):
-        if self.table[f'cell{cell_row}-{cell_column}'].get() == '':
+        if self.table[f'cell{cell_row}-{cell_column}'].get() == '' and not self.is_game_finished:
             print('Active Player:', self.active_player)
             self.table[f'cell{cell_row}-{cell_column}'].set(self.active_player)
             print(self.table)
             if self.current_turn >= 5:
-                self.check_for_victory(cell_row, cell_column)
-                if self.check_for_victory(cell_row, cell_column):
-                    print('Hi')
-            self.switch_active_player()
-            self.update_turn_count()
+                self.is_game_finished = self.check_for_victory(cell_row, cell_column)
+                print(self.is_game_finished)
+            if not self.is_game_finished:
+                if self.current_turn < 10 - 1:
+                    self.switch_active_player()
+                    self.update_turn_count()
+                else: 
+                    print('Stalemate!')
+                    self.timer.stop()
+            else:
+                self.that_who_wins()
 
     def switch_active_player(self):
         if self.active_player == 'X':
@@ -99,25 +106,35 @@ class GameFrame(Frame):
             results_in_second_diagonal = [self.table[f'cell{i}-{2-i}'].get() for i in range(3)]
             if all(r == self.active_player for r in results_in_second_diagonal):
                 return True
-        return False  
+        return False 
+    
+    def that_who_win(self):
+        self.timer.stop()
+        print(f'''{self.active_player} has won the Game!''')
                    
-                
-        # TODO: При положительном результате проверки - прекращать игру
+          # TODO: Заканчивать игру если нет ходов (по аналогии с check_for_victory и методом stop, можно сделать внутри handle_turn; если победы нет, 
+          # проверять на свободные ходы, если они есть, продолжать игру. проверку начинать если current_turn <10. сделать отдельный метод который заканчивает таймер и выводит в консоль 
+          # победителя, победитель - active_player)         
         
 
 
 class Timer(Label):
     seconds = 0
     minutes = 0
+    is_running = True
     def __init__(self, master):
         super().__init__(master)
-        self.count()
+        self.__count()
 
-    def count(self):
+    def __count(self):
         text = f'{self.minutes}:{self.seconds:02d}'
         self.configure(text=text)
         self.seconds = self.seconds + 1
         if self.seconds >= 60:
             self.minutes = self.minutes + 1 
             self.seconds = 0
-        self.after(1000, self.count)
+        if self.is_running:
+            self.after(1000, self.__count)
+    
+    def stop(self):
+        self.is_running = False
