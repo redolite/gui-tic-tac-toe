@@ -1,5 +1,9 @@
-from tkinter import Frame, Label, Button, StringVar
+from tkinter import Frame, Label, Button, StringVar, messagebox
 
+NAMES_DICTIONARY = {
+    'X': 'Крестики',
+    'O': 'Нолики' 
+}
 
 class GameFrame(Frame):
     def __init__(self, master):
@@ -68,14 +72,13 @@ class GameFrame(Frame):
                 self.is_game_finished = self.check_for_victory(cell_row, cell_column)
                 print(self.is_game_finished)
             if not self.is_game_finished:
-                if self.current_turn < 10 - 1:
+                if self.current_turn < 9:
                     self.switch_active_player()
                     self.update_turn_count()
                 else: 
-                    print('Stalemate!')
-                    self.timer.stop()
+                    self.end_game(stalemate=True)
             else:
-                self.that_who_wins()
+                self.end_game()
 
     def switch_active_player(self):
         if self.active_player == 'X':
@@ -108,13 +111,17 @@ class GameFrame(Frame):
                 return True
         return False 
     
-    def that_who_win(self):
+    def end_game(self, stalemate = False):
         self.timer.stop()
-        print(f'''{self.active_player} has won the Game!''')
-                   
-          # TODO: Заканчивать игру если нет ходов (по аналогии с check_for_victory и методом stop, можно сделать внутри handle_turn; если победы нет, 
-          # проверять на свободные ходы, если они есть, продолжать игру. проверку начинать если current_turn <10. сделать отдельный метод который заканчивает таймер и выводит в консоль 
-          # победителя, победитель - active_player)         
+        if stalemate:
+            print('Stalemate!')
+            messagebox.showinfo('Ничья!', 'Ничья!')
+        else:
+            print(f'''{self.active_player} !''')
+            messagebox.showinfo('Победа!', f'{NAMES_DICTIONARY[self.active_player]} победили!')
+        restart_game = messagebox.askyesno('Играть снова?', 'Вы хотите перезапустить игру?')
+        if not restart_game:
+            self.destroy()                   
         
 
 
@@ -137,4 +144,4 @@ class Timer(Label):
             self.after(1000, self.__count)
     
     def stop(self):
-        self.is_running = False
+        self.is_running = False        
