@@ -1,7 +1,7 @@
 from tkinter import Frame, Label, Button, TOP, Y
 
 class MainMenuFrame(Frame):
-    def __init__(self, master, onclick):
+    def __init__(self, master, on_start_game_btn_click):
         super().__init__(master)
         self.title = Label(self, text = "GUI-Tic-Tac-Toe",
             font = ("InterFace XBold", 30)
@@ -19,8 +19,11 @@ class MainMenuFrame(Frame):
         highlightcolor="#32CD32", 
         highlightbackground="#32CD32", 
         borderwidth=4,
-        command=onclick
+        command=on_start_game_btn_click
         )
+
+    def show(self):
         self.title.pack(side=TOP)
         self.button.pack(side=TOP, expand=True)
         self.pack(expand=True, fill=Y)
+    

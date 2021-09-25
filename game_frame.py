@@ -6,12 +6,13 @@ NAMES_DICTIONARY = {
 }
 
 class GameFrame(Frame):
-    def __init__(self, master):
+    def __init__(self, master, on_game_end):
         self.table = {}
         self.active_player = 'X'
         self.current_turn = 1
         self.turn_string = StringVar(value=f'Ход {self.current_turn}')
         self.is_game_finished = False
+        self.on_game_end = on_game_end
         super().__init__(master)
         # Чтобы фрейм мог расширяться, необходимо настроить сетку на его
         # контейнере
@@ -37,7 +38,7 @@ class GameFrame(Frame):
             buttons_list = []
             for j in range(3):
                 self.table[f'cell{i}-{j}'] = StringVar(value='')
-                button = Button(board, textvariable = self.table[f'cell{i}-{j}'], command=lambda arg1=i, arg2=j: self.handle_turn(arg1, arg2))
+                button = Button(board, textvariable = self.table[f'cell{i}-{j}'], command=lambda arg1=i, arg2=j: self.__handle_turn(arg1, arg2))
                 buttons_list.append(button)
             buttons.append(buttons_list)
         turn_counter = Label(top_bar, textvariable=self.turn_string) # текст в лейбле можно соеденить со значением переменной(прочитать)
@@ -63,36 +64,36 @@ class GameFrame(Frame):
 
         self.grid(sticky="nsew")
 
-    def handle_turn(self, cell_row, cell_column):
+    def __handle_turn(self, cell_row, cell_column):
         if self.table[f'cell{cell_row}-{cell_column}'].get() == '' and not self.is_game_finished:
             print('Active Player:', self.active_player)
             self.table[f'cell{cell_row}-{cell_column}'].set(self.active_player)
             print(self.table)
             if self.current_turn >= 5:
-                self.is_game_finished = self.check_for_victory(cell_row, cell_column)
+                self.is_game_finished = self.__check_for_victory(cell_row, cell_column)
                 print(self.is_game_finished)
             if not self.is_game_finished:
                 if self.current_turn < 9:
-                    self.switch_active_player()
-                    self.update_turn_count()
+                    self.__switch_active_player()
+                    self.__update_turn_count()
                 else: 
-                    self.end_game(stalemate=True)
+                    self.__end_game(stalemate=True)
             else:
-                self.end_game()
+                self.__end_game()
 
-    def switch_active_player(self):
+    def __switch_active_player(self):
         if self.active_player == 'X':
             self.active_player = 'O'
         elif self.active_player == 'O':
             self.active_player = 'X'
 
-    def update_turn_count(self):
+    def __update_turn_count(self):
         self.current_turn = self.current_turn + 1
         self.turn_string.set(f'Ход {self.current_turn}')
         print("current_turn:", self.current_turn)
         print("turn_string:", self.turn_string.get())
 
-    def check_for_victory(self, cell_row, cell_column):
+    def __check_for_victory(self, cell_row, cell_column):
         results_in_row = [self.table[f'cell{cell_row}-{i}'].get() for i in range(3)]
         results_in_column = [self.table[f'cell{i}-{cell_column}'].get() for i in range(3)]
         if all(r == self.active_player for r in results_in_row):
@@ -111,7 +112,7 @@ class GameFrame(Frame):
                 return True
         return False 
     
-    def end_game(self, stalemate = False):
+    def __end_game(self, stalemate = False):
         self.timer.stop()
         if stalemate:
             print('Stalemate!')
@@ -121,7 +122,7 @@ class GameFrame(Frame):
             messagebox.showinfo('Победа!', f'{NAMES_DICTIONARY[self.active_player]} победили!')
         restart_game = messagebox.askyesno('Играть снова?', 'Вы хотите перезапустить игру?')
         if not restart_game:
-            self.destroy()                   
+            self.on_game_end()                  
         
 
 

@@ -11,10 +11,16 @@ window.title('Крестики-Нолики')
 
 
 def start_game():
-    main_menu_frame.destroy()
-    game = GameFrame(window)
+    main_menu.pack_forget()
     game.show()
 
+def end_game():
+    game.grid_forget()
+    main_menu.show()
 
-main_menu_frame = MainMenuFrame(window, start_game)
+
+
+game = GameFrame(window, end_game)
+main_menu = MainMenuFrame(window, start_game)
+main_menu.show()
 window.mainloop()
