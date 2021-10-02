@@ -64,6 +64,18 @@ class GameFrame(Frame):
 
         self.grid(sticky="nsew")
 
+        self.timer.start()
+
+    def __set_initial_state(self):
+        for i in range(3):
+            for j in range(3):
+              self.table[f'cell{i}-{j}'].set('')
+        self.is_game_finished = False
+        self.current_turn = 1
+        self.active_player = 'X'
+        self.turn_string.set(f'Ход {self.current_turn}')
+        self.timer.reset()  
+
     def __handle_turn(self, cell_row, cell_column):
         if self.table[f'cell{cell_row}-{cell_column}'].get() == '' and not self.is_game_finished:
             print('Active Player:', self.active_player)
@@ -121,28 +133,46 @@ class GameFrame(Frame):
             print(f'''{self.active_player} !''')
             messagebox.showinfo('Победа!', f'{NAMES_DICTIONARY[self.active_player]} победили!')
         restart_game = messagebox.askyesno('Играть снова?', 'Вы хотите перезапустить игру?')
-        if not restart_game:
-            self.on_game_end()                  
+        self.__set_initial_state()
+        if restart_game:
+            self.timer.start()
+        else:
+            self.on_game_end()
+            
+
         
 
 
 class Timer(Label):
-    seconds = 0
-    minutes = 0
-    is_running = True
+    __seconds = 0
+    __minutes = 0
+    __is_running = True
     def __init__(self, master):
         super().__init__(master)
+        self.__update_text()
+
+    def stop(self):
+        self.__is_running = False 
+
+    def reset(self):
+        self.__seconds = 0
+        self.__minutes = 0
+        self.__update_text()
+
+    def start(self):
+        self.__is_running = True
         self.__count()
 
     def __count(self):
-        text = f'{self.minutes}:{self.seconds:02d}'
-        self.configure(text=text)
-        self.seconds = self.seconds + 1
-        if self.seconds >= 60:
-            self.minutes = self.minutes + 1 
-            self.seconds = 0
-        if self.is_running:
+        self.__update_text()
+        self.__seconds = self.__seconds + 1
+        if self.__seconds >= 60:
+            self.__minutes = self.__minutes + 1 
+            self.__seconds = 0
+        if self.__is_running:
             self.after(1000, self.__count)
+
+    def __update_text(self):
+        text = f'{self.__minutes}:{self.__seconds:02d}'
+        self.configure(text=text)
     
-    def stop(self):
-        self.is_running = False        
